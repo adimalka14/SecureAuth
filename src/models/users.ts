@@ -1,19 +1,19 @@
 import { hashPassword } from '../utils/helpers';
 
-interface User {
+export interface IUser {
     username: string;
     password: string;
     roles: string[];
 }
 
-const users: User[] = [];
+const users: IUser[] = [];
 
-export async function findUserByUsername(username: User) {
+export async function findUserByUsername(username: string): Promise<IUser | undefined> {
     return users.find((user) => user.username === username);
 }
 
-export async function createUser(username: string, password: string, roles: string[] = ['user']): Promise<User> {
-    const newUser: User = {
+export async function createUser(username: string, password: string, roles: string[] = ['user']): Promise<IUser> {
+    const newUser: IUser = {
         username,
         password,
         roles,
@@ -39,4 +39,4 @@ let hashedPassword = '';
     await createUser('admin', hashedPassword, ['admin']);
 })();
 
-export { users as User };
+export { users };

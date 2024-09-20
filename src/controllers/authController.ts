@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { hashPassword } from '../utils/helpers';
-import { findUserByUsername, createUser } from '../models/users';
+import { findUserByUsername, createUser, IUser } from '../models/users';
 import passport from 'passport';
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
@@ -25,7 +25,7 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     const { username, password } = req.body;
 
-    const userExist = await findUserByUsername(username);
+    const userExist: IUser | undefined = await findUserByUsername(username);
 
     if (userExist) {
         return res.status(409).json({ message: 'User already exists' });

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../models/users';
+import { IUser } from '../models/users';
 
 export async function ensureAdmin(req: Request, res: Response, next: NextFunction) {
-    const user: User = req.user as User;
+    const user: IUser = req.user as IUser;
     if (user.roles && user.roles.includes('admin')) {
         return next();
     } else {

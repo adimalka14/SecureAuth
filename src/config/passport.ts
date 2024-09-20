@@ -1,7 +1,7 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import { comparePasswords } from '../utils/helpers';
-import { findUserByUsername } from '../models/users';
+import { findUserByUsername, IUser } from '../models/users';
 
 const LocalStrategy = passportLocal.Strategy;
 
@@ -27,8 +27,13 @@ passport.serializeUser((user: any, done) => {
 });
 
 passport.deserializeUser(async (username: string, done) => {
-    const user = await findUserByUsername(username);
-    done(null, user);
+    const user: IUser | undefined = await findUserByUsername(username);
+
+    if (!user) {
+        return done(null, false);
+    }
+
+    return done(null, user);
 });
 
 export default passport;

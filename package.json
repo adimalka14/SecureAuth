@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -w",
-    "start": "nodemon dist/server.js"
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts",
+    "build": "tsc",
+    "build:watch": "tsc -w"
   },
   "author": "Adi",
   "license": "ISC",
@@ -23,6 +25,7 @@
     "@types/passport-local": "^1.0.38",
     "nodemon": "^3.1.4",
     "prettier": "^3.3.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
   },
   "dependencies": {
@@ -35,6 +38,7 @@
     "express-rate-limit": "^7.4.0",
     "express-session": "^1.18.0",
     "helmet": "^7.1.0",
+    "mongoose": "^8.6.3",
     "morgan": "^1.10.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"

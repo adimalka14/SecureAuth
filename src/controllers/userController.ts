@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { comparePasswords, hashPassword } from '../utils/helpers';
-import { findUserByUsername, deleteUser } from '../models/users';
-import { User } from '../models/users';
+import { deleteUser } from '../models/users';
+import { IUser } from '../models/users';
 
-export const changePassword = async (req: Request, res: Response, next: NextFunction) => {
+export const changePassword = async (req: Request, res: Response) => {
     const { prevPassword, newPassword } = req.body;
-
-    const user: User = await findUserByUsername(req.user.username);
+    const user: IUser = req.user as IUser;
 
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -29,23 +28,23 @@ export const changePassword = async (req: Request, res: Response, next: NextFunc
     res.status(200).json({ message: 'User password changed successfully.' });
 };
 
-export const getUserDetails = (req: Request, res: Response, next: NextFunction) => {
+export const getUserDetails = (req: Request, res: Response) => {
+    const { username, roles } = req.user as IUser;
     res.json({
-        name: req.user.username,
-        role: req.user.role,
-        password: req.user.password,
+        username,
+        roles,
     });
 };
 
 export const deleteAccount = async (req: Request, res: Response, next: NextFunction) => {
-    const user: User = await findUserByUsername(req.user.username);
+    const user: IUser = req.user as IUser;
 
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }
 
     try {
-        deleteUser(user.username);
+        await deleteUser(user.username);
         req.logout((err) => {
             if (err) return next(err);
         });
@@ -55,6 +54,6 @@ export const deleteAccount = async (req: Request, res: Response, next: NextFunct
     }
 };
 
-export const updateUserInfo = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUserInfo = async (req: Request, res: Response) => {
     res.status(200).json({ message: 'User updated successfully.' });
 };
