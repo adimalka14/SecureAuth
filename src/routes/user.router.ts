@@ -10,8 +10,6 @@ router.delete('/:userId', ensureAuthenticatedMW, deleteAccountCtrl);
 
 router.get('/:userId', ensureAuthenticatedMW, getUserDetailsCtrl);
 
-router.get('/', ensureAuthenticatedMW, getUserDetailsCtrl);
-
 router.put('/:userId', ensureAuthenticatedMW, updateUserInfoCtrl);
 
 export default router;
