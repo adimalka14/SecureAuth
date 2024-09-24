@@ -3,17 +3,15 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import cors from 'cors';
 import helmet from 'helmet';
-import { generalLimiter } from './config/ratelimits';
-import compression from 'compression';
-import passport from './config/passport';
 import session from 'express-session';
+import compression from 'compression';
 import dotenv from 'dotenv';
 
-dotenv.config();
+import passport from './config/passport.config';
+import { generalLimiterMW } from './middlewares/rateLimits.MW';
+import { initAppRoutes } from './routes';
 
-import authRouter from './routes/auth';
-import userRouter from './routes/user';
-import adminRouter from './routes/admin';
+dotenv.config();
 
 const app = express();
 
@@ -21,12 +19,10 @@ const sessionOptions = {
     secret: process.env.SESSION_SECRET || 'default_secret',
     resave: false,
     saveUninitialized: true,
-    cookie: {
-        secure: false,
-    },
+    cookie: { secure: false },
 };
 
-app.use(generalLimiter);
+app.use(generalLimiterMW);
 app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));
@@ -37,11 +33,6 @@ app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', (req: express.Request, res: express.Response) => {
-    res.status(200).send('OK');
-});
-app.use('/auth', authRouter);
-app.use('/user', userRouter);
-app.use('/admin', adminRouter);
+initAppRoutes(app);
 
 export default app;

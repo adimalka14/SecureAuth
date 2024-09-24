@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { comparePasswords, hashPassword } from '../utils/helpers';
-import { deleteUser } from '../models/users';
-import { IUser } from '../models/users';
+import { deleteUser, IUser } from '../models/user.model';
 
-export const changePassword = async (req: Request, res: Response) => {
+export const changePasswordCtrl = async (req: Request, res: Response) => {
     const { prevPassword, newPassword } = req.body;
     const user: IUser = req.user as IUser;
 
@@ -28,15 +27,13 @@ export const changePassword = async (req: Request, res: Response) => {
     res.status(200).json({ message: 'User password changed successfully.' });
 };
 
-export const getUserDetails = (req: Request, res: Response) => {
+export const getUserDetailsCtrl = (req: Request, res: Response) => {
     const { username, roles } = req.user as IUser;
-    res.json({
-        username,
-        roles,
-    });
+
+    res.json({ username, roles });
 };
 
-export const deleteAccount = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteAccountCtrl = async (req: Request, res: Response, next: NextFunction) => {
     const user: IUser = req.user as IUser;
 
     if (!user) {
@@ -54,6 +51,6 @@ export const deleteAccount = async (req: Request, res: Response, next: NextFunct
     }
 };
 
-export const updateUserInfo = async (req: Request, res: Response) => {
+export const updateUserInfoCtrl = async (req: Request, res: Response) => {
     res.status(200).json({ message: 'User updated successfully.' });
 };
