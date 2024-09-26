@@ -1,42 +1,24 @@
-import { hashPassword } from '../utils/helpers';
+import { Schema, model, Model } from 'mongoose';
 
-export interface IUser {
+interface IUser {
     username: string;
+    email: string;
     password: string;
-    roles: string[];
+    isActive: boolean;
 }
 
-const users: IUser[] = [];
+interface IUserModel extends Model<IUser> {}
 
-export async function findUserByUsername(username: string): Promise<IUser | undefined> {
-    return users.find((user) => user.username === username);
-}
+const userModel = new Schema<IUser, IUserModel>(
+    {
+        username: { type: String, required: [true, 'you must provide a username'], trim: true },
+        email: { type: String, unique: true, required: [true, 'you must provide an email'], trim: true },
+        password: { type: String, required: [true, 'you must provide a password'], minlength: 4 },
+        isActive: { type: Boolean, default: true },
+    },
+    { timestamps: true }
+);
 
-export async function createUser(username: string, password: string, roles: string[] = ['user']): Promise<IUser> {
-    const newUser: IUser = {
-        username,
-        password,
-        roles,
-    };
-    users.push(newUser);
-    return newUser;
-}
+const User = model<IUser, IUserModel>('User', userModel);
 
-export async function deleteUser(username: string): Promise<void> {
-    const index = users.findIndex((user) => user.username === username);
-
-    if (index !== -1) {
-        users.splice(index, 1);
-    } else {
-        throw new Error('User not found');
-    }
-}
-
-let hashedPassword = '';
-
-(async () => {
-    hashedPassword = await hashPassword('1234');
-    await createUser('admin', hashedPassword, ['admin']);
-})();
-
-export { users };
+export default User;

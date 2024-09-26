@@ -5,18 +5,15 @@ import cors from 'cors';
 import helmet from 'helmet';
 import session from 'express-session';
 import compression from 'compression';
-import dotenv from 'dotenv';
-
+import { SESSION_SECRET } from './utils/env-var';
 import passport from './config/passport.config';
 import { generalLimiterMW } from './middlewares/rateLimits.MW';
 import { initAppRoutes } from './routes';
 
-dotenv.config();
-
 const app = express();
 
 const sessionOptions = {
-    secret: process.env.SESSION_SECRET || 'default_secret',
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },

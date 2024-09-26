@@ -1,13 +1,13 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import { comparePasswords } from '../utils/helpers';
-import { findUserByUsername, IUser } from '../models/user.model';
+import { getUserById } from '../services/user.service';
 
 const LocalStrategy = passportLocal.Strategy;
 
 passport.use(
-    new LocalStrategy(async (username: string, password: string, done) => {
-        const user = await findUserByUsername(username);
+    new LocalStrategy(async (email: string, password: string, done) => {
+        const user = await getUserById(email);
 
         if (!user) {
             return done(null, false, { message: 'User not found' });
@@ -23,11 +23,11 @@ passport.use(
 );
 
 passport.serializeUser((user: any, done) => {
-    done(null, user.username);
+    done(null, user._id);
 });
 
 passport.deserializeUser(async (username: string, done) => {
-    const user: IUser | undefined = await findUserByUsername(username);
+    const user: IUser | undefined = await getUserById(username);
 
     if (!user) {
         return done(null, false);
